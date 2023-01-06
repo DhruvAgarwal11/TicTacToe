@@ -18,7 +18,7 @@ body {
   }
   
   .square {
-    background: #fff;
+    /* background: #fff; */
     border: 1px solid #999;
     float: left;
     font-size: 24px;
@@ -34,6 +34,10 @@ body {
   
   .square:focus {
     outline: none;
+  }
+
+  .square-winner {
+    background: greenyellow
   }
   
   .kbd-navigation .square:focus {
