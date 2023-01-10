@@ -58,6 +58,7 @@ class Game extends React.Component{
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+        
         if (calculateWinner(squares) || squares[i]) return;
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
@@ -78,8 +79,25 @@ class Game extends React.Component{
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
-        const moves = history.map((step, move) => {
-            const desc = move ? 'Go to move #' + move : 'Go to game start';
+        var coords = [];
+        for (var i = 0; i < history.length; i++){
+            var squares = history[i].squares.slice();
+            for (var row = 0; row < 9; row++){
+                if (i === 0 && squares[row] !== ""){
+                    coords.push(row);
+                    break;
+                }
+                if (i !== 0){
+                    var prevSquares = history[i-1].squares.slice();
+                    if (prevSquares[row] !== squares[row]){
+                        coords.push(row);
+                        break;
+                    }
+                }
+            }
+        } 
+        var moves = history.map((step, move) => {
+            const desc = move ? 'Go to move #' + move + ' @ Row ' + (Math.floor(coords[move]/3) + 1) + ' & Column ' + (coords[move]%3 + 1): 'Go to game start';
             return (
                 <li key = {move}>
                     <button onClick = {() => this.jumpTo(move)}>{desc}</button>
@@ -89,12 +107,13 @@ class Game extends React.Component{
         let status;
         if (winner) {
             status = "Winner: " + winner[0];
-
+        }
+        else if (!winner && history.length === 10){
+            status = "The game is a draw!";
         }
         else{
             status = "Next Player: " + (this.state.xIsNext ? 'X' : 'O');
         }
-
         return (
             <div className = "game">
                 <div className = "game-board">
